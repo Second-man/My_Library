@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🛠️ 管理员后台 - 书籍管理</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f9f7fe, #e3f2fd);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 用户操作栏 */
+        .user-bar {
+            text-align: right;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .user-bar a {
+            color: #4a148c;
+            text-decoration: none;
+            margin: 0 8px;
+            transition: color 0.2s;
+        }
+
+        .user-bar a:hover {
+            color: #6a1b9a;
+            text-decoration: underline;
+        }
+
+        /* 页面标题 */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h2 {
+            font-size: 2rem;
+            color: #4a148c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* 消息提示 */
+        .flash-messages {
+            background: #ffebee;
+            color: #c62828;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            border: 1px solid #ef9a9a;
+        }
+
+        .flash-messages ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .flash-messages li {
+            margin: 4px 0;
+        }
+
+        /* 添加书籍卡片 */
+        .add-book-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .add-book-card h3 {
+            font-size: 1.4rem;
+            color: #2e2e2e;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid #bbdefb;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            border-color: #42a5f5;
+            box-shadow: 0 0 0 4px rgba(66, 165, 245, 0.15);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #4a148c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #6a1b9a;
+        }
+
+        .btn-danger {
+            background-color: #e57373;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #ef5350;
+        }
+
+        .btn-warning {
+            background-color: #ffb74d;
+            color: #4e342e;
+        }
+
+        .btn-warning:hover {
+            background-color: #ffa726;
+        }
+
+        /* 书籍列表表格 */
+        .books-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .books-table th,
+        .books-table td {
+            padding: 16px 20px;
+            text-align: left;
+        }
+
+        .books-table th {
+            background: #4a148c;
+            color: white;
+            font-weight: 600;
+        }
+
+        .books-table tr:hover {
+            background-color: #f3e5f5;
+        }
+
+        .books-table tr:nth-child(even) {
+            background-color: #f9f4fc;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-buttons a,
+        .action-buttons button {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #4a148c;
+            color: white;
+            padding: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header .close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 16px 30px;
+            text-align: right;
+            border-top: 1px solid #eee;
+        }
+
+        .modal-footer button {
+            margin-left: 10px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .books-table th,
+            .books-table td {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons a,
+            .action-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 用户操作栏 -->
+        <div class="user-bar">
+            <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> 返回首页</a> |
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+        </div>
+
+        <!-- 页面标题 -->
+        <header>
+            <h2><i class="fas fa-cogs"></i> 管理员后台</h2>
+            <p>共管理 {{ books|length }} 本书</p>
+        </header>
+
+        <!-- 消息提示 -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- 添加书籍 -->
+        <div class="add-book-card">
+            <h3><i class="fas fa-plus-circle"></i> 添加新书</h3>
+            <form method="POST" action="{{ url_for('add_book') }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title"><i class="fas fa-book"></i> 书名</label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="请输入书名" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="author"><i class="fas fa-user"></i> 作者</label>
+                    <input type="text" id="author" name="author" class="form-control" placeholder="请输入作者" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cover_url"><i class="fas fa-image"></i> 封面图片URL（可选）</label>
+                    <input type="text" id="cover_url" name="cover_url" class="form-control" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label for="file"><i class="fas fa-file-upload"></i> 上传文本文件 (.txt)</label>
+                    <input type="file" id="file" name="file" class="form-control" accept=".txt" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> 添加书籍
+                </button>
+            </form>
+        </div>
+
+        <!-- 书籍列表 -->
+        <h3 style="color: #4a148c; margin-bottom: 16px;">
+            <i class="fas fa-book-open"></i> 现有书籍
+        </h3>
+
+        <table class="books-table">
+            <thead>
+                <tr>
+                    <th>书名</th>
+                    <th>作者</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('read_book', book_id=book.id) }}" class="btn btn-warning">
+                                <i class="fas fa-eye"></i> 查看
+                            </a>
+                            <a href="#" 
+                               onclick="editBook(
+                                   {{ book.id }}, 
+                                   '{{ book.title|e }}', 
+                                   '{{ book.author|e }}', 
+                                   '{{ book.cover_url|default('', true)|e }}'
+                               )" 
+                               class="btn btn-primary">
+                                <i class="fas fa-edit"></i> 修改
+                            </a>
+                            <a href="{{ url_for('delete_book', book_id=book.id) }}" 
+                               class="btn btn-danger"
+                               onclick="return confirm('确定要删除《{{ book.title }}》吗？')">
+                                <i class="fas fa-trash"></i> 删除
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 修改书籍模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>✏️ 修改书籍信息</span>
+                <button class="close" onclick="document.getElementById('editModal').style.display='none'">&times;</button>
+            </div>
+            <form id="editForm" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>书名：</label>
+                        <input type="text" name="title" id="editTitle" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>作者：</label>
+                        <input type="text" name="author" id="editAuthor" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>封面URL（可选）：</label>
+                        <input type="text" name="cover_url" id="editCover" class="form-control" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="document.getElementById('editModal').style.display='none'">
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> 保存修改
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function editBook(id, title, author, cover) {
+            document.getElementById('editForm').action = '/admin/edit/' + id;
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editAuthor').value = author;
+            document.getElementById('editCover').value = cover || '';
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

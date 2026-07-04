@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🔐 登录 - 我的藏书馆</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f9f7fe, #e3f2fd);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: #4a148c;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .login-header h2 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-body {
+            padding: 30px;
+        }
+
+        /* 消息提示 */
+        .flash-messages {
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #ffebee;
+            border: 1px solid #ef9a9a;
+            color: #c62828;
+            font-size: 0.95rem;
+            list-style: none;
+        }
+
+        .flash-messages li {
+            margin: 4px 0;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid #bbdefb;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            border-color: #42a5f5;
+            box-shadow: 0 0 0 4px rgba(66, 165, 245, 0.15);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #4a148c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #6a1b9a;
+        }
+
+        /* 链接区 */
+        .login-footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .login-footer a {
+            color: #1565c0;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+            color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- 头部 -->
+        <div class="login-header">
+            <h2><i class="fas fa-sign-in-alt"></i> 登录</h2>
+        </div>
+
+        <!-- 主体 -->
+        <div class="login-body">
+            <!-- 显示 flash 消息 -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flash-messages">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <!-- 登录表单 -->
+            <form method="POST">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> 用户名</label>
+                    <input type="text"
+                           id="username"
+                           name="username"
+                           class="form-control"
+                           placeholder="请输入用户名"
+                           required
+                           autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> 密码</label>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="请输入密码"
+                           required
+                           autocomplete="off">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> 登录
+                </button>
+            </form>
+        </div>
+
+        <!-- 底部链接 -->
+        <div class="login-footer">
+            没有账号？<a href="{{ url_for('register') }}">立即注册</a>
+        </div>
+    </div>
+</body>
+</html>

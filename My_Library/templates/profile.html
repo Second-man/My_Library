@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>❤️ 我的收藏</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f9f7fe, #e3f2fd);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h2 {
+            font-size: 2.2rem;
+            color: #d81b60;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #1565c0;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #0d47a1;
+            text-decoration: underline;
+        }
+
+        .back-link i {
+            margin-right: 6px;
+        }
+
+        /* 收藏书籍列表 - 卡片网格 */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 10px 0;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2e2e2e;
+            margin-bottom: 6px;
+        }
+
+        .book-author {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-read {
+            background-color: #e1bee7;
+            color: #4a148c;
+        }
+
+        .btn-read:hover {
+            background-color: #ce93d8;
+        }
+
+        .btn-unfavorite {
+            background-color: #ffccbc;
+            color: #d84315;
+        }
+
+        .btn-unfavorite:hover {
+            background-color: #ffab91;
+        }
+
+        /* 无收藏提示 */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: #eee;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            header h2 {
+                font-size: 1.8rem;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="container">
+        <!-- 返回链接 -->
+        <a href="{{ url_for('index') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> 返回首页
+        </a>
+
+        <!-- 标题 -->
+        <header>
+            <h2><i class="fas fa-heart"></i> 我的收藏</h2>
+            <p>你收藏的 {{ books|length }} 本书</p>
+        </header>
+
+        <!-- 收藏书籍列表 -->
+        <div class="books-grid">
+            {% for book in books %}
+            <div class="book-card">
+                <h3 class="book-title">{{ book.title }}</h3>
+                <p class="book-author">📘 {{ book.author }}</p>
+                <div class="book-actions">
+                    <a href="{{ url_for('read_book', book_id=book.id) }}" class="btn btn-read">
+                        <i class="fas fa-eye"></i> 阅读
+                    </a>
+                    <a href="{{ url_for('toggle_favorite', book_id=book.id) }}" class="btn btn-unfavorite">
+                        <i class="fas fa-heart-broken"></i> 取消收藏
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-heart-broken"></i>
+                <p>暂无收藏的书籍</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

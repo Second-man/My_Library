@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>📖 阅读《{{ book.title }}》</title>
+
+    <!-- Google Fonts: Poppins 和 Georgia -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Georgia&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f9f7fe, #e3f2fd);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #4a148c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #5a2d82;
+            margin-top: 10px;
+        }
+
+        nav a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4a148c;
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background-color: #6a1b9a;
+        }
+
+        /* 内容区域 */
+        .content-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            font-family: 'Georgia', serif;
+            font-size: 18px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: #333;
+        }
+
+        .content-card:before {
+            content: "";
+            position: absolute;
+            left: -20px;
+            top: 30px;
+            width: 4px;
+            height: calc(100% + 40px);
+            background: #3498db;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1><i class="fas fa-book"></i> 阅读：《{{ book.title }}》</h1>
+        <p>作者：<span style="color:#5a2d82">{{ book.author }}</span></p>
+        <nav><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> 返回首页</a></nav>
+    </header>
+
+    <div class="content-card">
+        {{ content }}
+    </div>
+</div>
+</body>
+</html>
